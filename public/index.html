@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal AI Assistant</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <h1>Personal AI Assistant</h1>
+        <p>Turn messy task input into a prioritized execution plan.</p>
+      </header>
+
+      <section class="card chat-card">
+        <div class="chat-log" id="chatLog" aria-live="polite"></div>
+        <form id="taskForm" class="chat-form">
+          <textarea
+            id="taskInput"
+            placeholder="e.g. Send proposal, gym, follow up client, prepare pitch deck"
+            rows="3"
+            required
+          ></textarea>
+          <div class="button-row">
+            <button type="submit" class="btn btn-primary">Analyze Tasks</button>
+            <button type="button" class="btn" id="rerunBtn" disabled>Re-run Analysis</button>
+            <button type="button" class="btn" id="nowBtn" disabled>What should I do now?</button>
+            <button type="button" class="btn btn-danger" id="clearBtn">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card board-card">
+        <div class="board-header">
+          <h2>Priority Matrix Task Board</h2>
+          <span id="taskCount">0 tasks</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Urgency</th>
+                <th>Importance</th>
+                <th>Estimated Time</th>
+                <th>Priority Bucket</th>
+              </tr>
+            </thead>
+            <tbody id="taskTableBody">
+              <tr>
+                <td colspan="5" class="empty">No tasks yet. Start by entering your day.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
