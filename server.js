@@ -2,6 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { analyzeWithOpenAI } from './lib/openai-analyzer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,11 +54,7 @@ async function handleAnalyze(req, res) {
       });
     }
 
-    const aiTasks = await analyzeWithOpenAI(input);
-    const tasks = aiTasks.map((task) => ({
-      ...task,
-      priority_bucket: classifyPriority(task.urgency, task.importance),
-    }));
+    const tasks = await analyzeWithOpenAI(input, process.env.OPENAI_API_KEY, process.env.OPENAI_MODEL || 'gpt-4o-mini');
 
     return sendJson(res, 200, { tasks });
   } catch (error) {
@@ -67,77 +64,6 @@ async function handleAnalyze(req, res) {
       details: error.message,
     });
   }
-}
-
-async function analyzeWithOpenAI(input) {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-      temperature: 0.2,
-      response_format: { type: 'json_object' },
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are a productivity assistant. Extract actionable tasks from user input and return strict JSON only. Respect exact schema and keep urgency/importance values to low|medium|high.',
-        },
-        {
-          role: 'user',
-          content: `Convert the following raw input into structured tasks.\n\nInput: "${input}"\n\nReturn JSON with this shape:\n{ "tasks": [{ "task": string, "urgency": "low|medium|high", "importance": "low|medium|high", "estimated_time_minutes": number }] }\n\nRules:\n- Split compound input into separate tasks\n- Keep task names short and action-oriented\n- estimated_time_minutes should be an integer between 5 and 240`,
-        },
-      ],
-    }),
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`OpenAI API error (${response.status}): ${text}`);
-  }
-
-  const data = await response.json();
-  const content = data?.choices?.[0]?.message?.content;
-
-  if (!content) {
-    throw new Error('Empty AI response.');
-  }
-
-  const parsed = JSON.parse(content);
-  const tasks = Array.isArray(parsed?.tasks) ? parsed.tasks : [];
-
-  return tasks
-    .map((t) => ({
-      task: String(t.task || '').trim(),
-      urgency: normalizeScale(t.urgency),
-      importance: normalizeScale(t.importance),
-      estimated_time_minutes: normalizeMinutes(t.estimated_time_minutes),
-    }))
-    .filter((t) => t.task.length > 0);
-}
-
-function classifyPriority(urgency, importance) {
-  if (urgency === 'high' && importance === 'high') return 'Do Now';
-  if (urgency === 'low' && importance === 'high') return 'Schedule';
-  if (urgency === 'high' && importance === 'low') return 'Quick Task';
-  return 'Drop';
-}
-
-function normalizeScale(value) {
-  const val = String(value || '').toLowerCase();
-  if (val === 'high' || val === 'medium' || val === 'low') return val;
-  return 'medium';
-}
-
-function normalizeMinutes(value) {
-  const num = Number(value);
-  if (Number.isFinite(num)) {
-    return Math.min(240, Math.max(5, Math.round(num)));
-  }
-  return 30;
 }
 
 function readJsonBody(req) {

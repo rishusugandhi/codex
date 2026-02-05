@@ -8,14 +8,32 @@
   </head>
   <body>
     <main class="app-shell">
-      <header class="hero">
-        <h1>Personal AI Assistant</h1>
-        <p>Turn messy task input into a prioritized execution plan.</p>
+      <header class="hero card">
+        <div>
+          <p class="eyebrow">AI Productivity Copilot</p>
+          <h1>Plan your day with clarity</h1>
+          <p class="hero-copy">
+            Drop your messy to-do list in natural language. Get structured tasks, an Eisenhower priority matrix,
+            and a clear “do this next” recommendation.
+          </p>
+        </div>
+        <ol class="workflow-steps">
+          <li><span>1</span> Capture your tasks</li>
+          <li><span>2</span> Analyze with AI</li>
+          <li><span>3</span> Execute by priority</li>
+        </ol>
       </header>
 
-      <section class="card chat-card">
+      <section class="card input-card" aria-label="Task input and actions">
+        <div class="section-head">
+          <h2>1) Capture your day</h2>
+          <p>Use commas or sentences — both work.</p>
+        </div>
+
         <div class="chat-log" id="chatLog" aria-live="polite"></div>
+
         <form id="taskForm" class="chat-form">
+          <label for="taskInput" class="sr-only">Task input</label>
           <textarea
             id="taskInput"
             placeholder="e.g. Send proposal, gym, follow up client, prepare pitch deck"
@@ -25,16 +43,64 @@
           <div class="button-row">
             <button type="submit" class="btn btn-primary">Analyze Tasks</button>
             <button type="button" class="btn" id="rerunBtn" disabled>Re-run Analysis</button>
-            <button type="button" class="btn" id="nowBtn" disabled>What should I do now?</button>
+            <button type="button" class="btn btn-accent" id="nowBtn" disabled>What should I do now?</button>
             <button type="button" class="btn btn-danger" id="clearBtn">Clear</button>
           </div>
         </form>
       </section>
 
+      <section class="metrics-grid" aria-label="Analysis overview">
+        <article class="card metric">
+          <p>Total Tasks</p>
+          <strong id="metricTotal">0</strong>
+        </article>
+        <article class="card metric">
+          <p>Do Now</p>
+          <strong id="metricDoNow">0</strong>
+        </article>
+        <article class="card metric">
+          <p>Schedule</p>
+          <strong id="metricSchedule">0</strong>
+        </article>
+        <article class="card metric">
+          <p>Quick Task</p>
+          <strong id="metricQuick">0</strong>
+        </article>
+      </section>
+
+      <section class="card matrix-card">
+        <div class="section-head">
+          <h2>2) Priority Matrix</h2>
+          <p id="taskCount">0 tasks</p>
+        </div>
+        <div class="matrix-grid" id="matrixGrid">
+          <div class="quadrant do-now" data-bucket="Do Now">
+            <h3>Do Now</h3>
+            <p>Urgent + Important</p>
+            <ul></ul>
+          </div>
+          <div class="quadrant schedule" data-bucket="Schedule">
+            <h3>Schedule</h3>
+            <p>Important, not urgent</p>
+            <ul></ul>
+          </div>
+          <div class="quadrant quick-task" data-bucket="Quick Task">
+            <h3>Quick Task</h3>
+            <p>Urgent, less important</p>
+            <ul></ul>
+          </div>
+          <div class="quadrant drop" data-bucket="Drop">
+            <h3>Drop</h3>
+            <p>Low impact</p>
+            <ul></ul>
+          </div>
+        </div>
+      </section>
+
       <section class="card board-card">
-        <div class="board-header">
-          <h2>Priority Matrix Task Board</h2>
-          <span id="taskCount">0 tasks</span>
+        <div class="section-head">
+          <h2>3) Detailed Task Board</h2>
+          <p>Review urgency, importance, and effort.</p>
         </div>
         <div class="table-wrap">
           <table>

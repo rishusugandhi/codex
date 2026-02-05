@@ -7,8 +7,8 @@ A production-style personal assistant that accepts natural-language daily tasks,
 - Structured task extraction using OpenAI API
 - Priority matrix buckets:
   - **Do Now** (high urgency + high importance)
-  - **Schedule** (low urgency + high importance)
-  - **Quick Task** (high urgency + low importance)
+  - **Schedule** (medium/low urgency + high importance)
+  - **Quick Task** (high urgency + medium/low importance)
   - **Drop** (everything else)
 - Re-run analysis button
 - Clear state button
@@ -16,11 +16,12 @@ A production-style personal assistant that accepts natural-language daily tasks,
 - Responsive polished frontend
 
 ## Tech stack
-- Node.js HTTP server (no external dependencies required)
+- Node.js HTTP server for local dev
+- Vercel Serverless Function for free cloud hosting
 - Vanilla HTML/CSS/JavaScript frontend
 - OpenAI Chat Completions API (`gpt-4o-mini` by default)
 
-## Setup
+## Local setup
 1. Ensure Node.js 18+ is installed.
 2. Create a `.env` file in project root:
 
@@ -37,6 +38,26 @@ A production-style personal assistant that accepts natural-language daily tasks,
    ```
 
 4. Open: `http://localhost:3000`
+
+## Deploy for **$0** (Vercel Hobby plan)
+You can host this publicly with no server cost.
+
+1. Push this repo to your GitHub account.
+2. Go to [vercel.com](https://vercel.com) and import your repo.
+3. Framework preset: **Other** (no build command needed).
+4. Add environment variable in Vercel project settings:
+   - `OPENAI_API_KEY` = your OpenAI API key
+   - Optional: `OPENAI_MODEL=gpt-4o-mini`
+5. Click **Deploy**.
+6. You get a live URL like `https://your-app.vercel.app`.
+
+> Important: hosting is free on Vercel, but OpenAI API usage is billed by OpenAI according to your account usage.
+
+
+## UX workflow
+1. **Capture**: user enters raw natural-language tasks in chat input.
+2. **Analyze**: AI converts tasks into structured objects with urgency, importance, and estimated time.
+3. **Act**: app shows metrics, Eisenhower quadrants, detailed board, and “What should I do now?” recommendation.
 
 ## API contract
 ### `POST /api/analyze`
@@ -62,6 +83,5 @@ A production-style personal assistant that accepts natural-language daily tasks,
 
 ## Production notes
 - Server validates and normalizes model output before returning it.
-- Static files are served with path traversal protection.
-- Request body size is limited to reduce abuse risk.
-
+- Static files are served with path traversal protection in local server mode.
+- Request body size is limited in local server mode to reduce abuse risk.
