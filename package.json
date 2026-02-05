@@ -1,0 +1,11 @@
+{
+  "name": "personal-ai-assistant-mvp",
+  "version": "1.0.0",
+  "description": "Production-style personal AI assistant for daily task prioritization",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  }
+}
