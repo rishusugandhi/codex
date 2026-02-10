@@ -13,6 +13,8 @@ A production-style personal assistant that accepts natural-language daily tasks,
 - Re-run analysis button
 - Clear state button
 - Bonus action: **What should I do now?**
+- Overwhelm Rescue mode for a 3-step calming action plan
+- Optional 15-minute focus reminders
 - Responsive polished frontend
 
 ## Tech stack
@@ -37,6 +39,28 @@ A production-style personal assistant that accepts natural-language daily tasks,
    ```
 
 4. Open: `http://localhost:3000`
+
+
+## What I need from you to get this live
+1. **Hosting target**: choose where to deploy (Render, Railway, Fly.io, AWS, etc.).
+2. **Production OpenAI key**: a live `OPENAI_API_KEY` (and optional `OPENAI_MODEL`).
+3. **Production domain**: either a custom domain or a temporary provider URL.
+4. **Basic limits policy**: acceptable max request volume/cost per day so we can add simple rate limiting rules.
+5. **Ops preference**: where you want logs/alerts (provider dashboard is fine to start).
+
+## Go-live checklist
+- Set required environment variables on the host:
+  - `OPENAI_API_KEY`
+  - `OPENAI_MODEL` (optional, default is `gpt-4o-mini`)
+  - `PORT` (usually injected by host)
+- Deploy service as a long-running Node process (`npm start`).
+- Verify health endpoint: `GET /healthz` should return `{ status: "ok", ... }`.
+- Smoke test the app:
+  - Open `/`
+  - Submit sample task input
+  - Confirm `/api/analyze` returns structured tasks
+- Add a restart policy and enable provider TLS/domain routing.
+- (Recommended) Add rate limiting + API key rotation policy before broad sharing.
 
 ## API contract
 ### `POST /api/analyze`

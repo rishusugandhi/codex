@@ -58,6 +58,7 @@ body {
   border-radius: 12px;
   line-height: 1.35;
   font-size: 0.95rem;
+  white-space: pre-line;
 }
 .msg.user { background: #ebeeff; margin-left: auto; }
 .msg.assistant { background: #f5f7fb; border: 1px solid var(--border); }
@@ -96,6 +97,16 @@ body {
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
+}
+
+.rescue-card {
+  border-color: #d5dcff;
+  background: linear-gradient(180deg, #fcfdff, #f7f8ff);
+}
+
+.rescue-copy {
+  margin: 10px 0 0;
+  color: var(--subtle);
 }
 
 .table-wrap { overflow-x: auto; }
