@@ -26,6 +26,14 @@ const server = http.createServer(async (req, res) => {
     return handleAnalyze(req, res);
   }
 
+  if (req.method === 'GET' && url.pathname === '/healthz') {
+    return sendJson(res, 200, {
+      status: 'ok',
+      uptime_seconds: Math.round(process.uptime()),
+      openai_configured: Boolean(process.env.OPENAI_API_KEY),
+    });
+  }
+
   if (req.method === 'GET') {
     return serveStatic(url.pathname, res);
   }
